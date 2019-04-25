@@ -5,11 +5,7 @@ from PIL import Image
 import numpy as np
 import tensorflow.contrib.eager as tfe
 import image_util
-from tensorflow.python.keras.preprocessing import image as kp_image
 from tensorflow.python.keras import models
-from tensorflow.python.keras import losses
-from tensorflow.python.keras import layers
-from tensorflow.python.keras import backend as K
 import time
 
 
