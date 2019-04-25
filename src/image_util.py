@@ -20,16 +20,14 @@ def load(path_to_img):
 
 
 def show(img, title=None):
-    loaded_img = load(img)
     # Remove the batch dimension
-    out = np.squeeze(loaded_img, axis=0)
+    out = np.squeeze(img, axis=0)
     # Normalize for display
     out = out.astype('uint8')
     plt.imshow(out)
     if title is not None:
         plt.title(title)
     plt.imshow(out)
-    plt.show()
 
 
 def load_and_process(path_to_img):

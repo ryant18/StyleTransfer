@@ -14,8 +14,15 @@ print("Eager execution: {}".format(tf.executing_eagerly()))
 content_path = '../images/Green_Sea_Turtle_grazing_seagrass.jpg'
 style_path =   '../images/The_Great_Wave_off_Kanagawa.jpg'
 
-img.show(content_path, "Content")
-img.show(style_path, "Style")
+content = img.load(content_path).astype('uint8')
+style = img.load(style_path)
+
+plt.subplot(1, 2, 1)
+img.show(content, 'Content Image')
+
+plt.subplot(1, 2, 2)
+img.show(style, 'Style Image')
+plt.show()
 
 best, best_loss = model.run_style_transfer(content_path, style_path, num_iterations=1000)
 
