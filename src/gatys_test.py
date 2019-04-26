@@ -55,6 +55,7 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
         plt.show()
 
     x = np.arange(len(total_loss))
+    plt.gca().set_ylim([10e4, 10e7])
     plt.plot(x, np.array(total_loss), label='total loss')
     plt.plot(x, np.array(content_loss), label='content loss')
     plt.plot(x, np.array(style_loss), label='style loss')
@@ -74,9 +75,3 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
         fig_compare.savefig(os.path.join('..', 'compare', output_name), bbox_inches='tight')
         fig_timeline.savefig(os.path.join('..', 'timeline', output_name), bbox_inches='tight')
         fig_loss.savefig(os.path.join('..', 'loss', output_name), bbox_inches='tight')
-
-
-cpath = os.path.join('..',  'images', 'cardinal' + '.jpg')
-spath = os.path.join('..', 'images', 'tar8' + '.png')
-create_image(cpath, spath, show_output=True, save_output=True)
-
