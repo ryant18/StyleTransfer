@@ -1,7 +1,4 @@
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import IPython.display
-from PIL import Image
 import numpy as np
 import tensorflow.contrib.eager as tfe
 import image_util
@@ -61,9 +58,6 @@ def gram_matrix(input_tensor):
 
 def get_style_loss(base_style, gram_target):
     """Expects two images of dimension h, w, c"""
-    # height, width, num filters of each layer
-    # We scale the loss at a given layer by the size of the feature map and the number of filters
-    height, width, channels = base_style.get_shape().as_list()
     gram_style = gram_matrix(base_style)
 
     return tf.reduce_mean(tf.square(gram_style - gram_target))
@@ -109,7 +103,7 @@ def compute_loss(model, loss_weights, init_image, gram_style_features, content_f
     # Accumulate content losses from all layers
     weight_per_content_layer = 1.0 / float(num_content_layers)
     for target_content, comb_content in zip(content_features, content_output_features):
-        content_score += weight_per_content_layer* get_content_loss(comb_content[0], target_content)
+        content_score += weight_per_content_layer * get_content_loss(comb_content[0], target_content)
 
     style_score *= style_weight
     content_score *= content_weight
@@ -177,9 +171,6 @@ def run_style_transfer(content_path,
     # Create our optimizer
     opt = tf.train.AdamOptimizer(learning_rate=5, beta1=0.99, epsilon=1e-1)
 
-    # For displaying intermediate images
-    iter_count = 1
-
     # Store our best result
     best_loss, best_img = float('inf'), None
 
@@ -194,10 +185,7 @@ def run_style_transfer(content_path,
     }
 
     # For displaying
-    num_rows = 2
-    num_cols = 5
-    display_interval = num_iterations/(num_rows*num_cols)
-    start_time = time.time()
+
     global_start = time.time()
 
     norm_means = np.array([103.939, 116.779, 123.68])
@@ -211,34 +199,24 @@ def run_style_transfer(content_path,
         opt.apply_gradients([(grads, init_image)])
         clipped = tf.clip_by_value(init_image, min_vals, max_vals)
         init_image.assign(clipped)
-        end_time = time.time()
 
         if loss < best_loss:
             # Update best loss and best image from total loss.
             best_loss = loss
             best_img = image_util.deprocess(init_image.numpy())
 
-        if i % display_interval== 0:
+        if i % 100 == 0:
             start_time = time.time()
 
             # Use the .numpy() method to get the concrete numpy array
             plot_img = init_image.numpy()
             plot_img = image_util.deprocess(plot_img)
             imgs.append(plot_img)
-            IPython.display.clear_output(wait=True)
-            IPython.display.display_png(Image.fromarray(plot_img))
             print('Iteration: {}'.format(i))
             print('Total loss: {:.4e}, '
                   'style loss: {:.4e}, '
                   'content loss: {:.4e}, '
                   'time: {:.4f}s'.format(loss, style_score, content_score, time.time() - start_time))
     print('Total time: {:.4f}s'.format(time.time() - global_start))
-    IPython.display.clear_output(wait=True)
-    plt.figure(figsize=(14,4))
-    for i, img in enumerate(imgs):
-        plt.subplot(num_rows,num_cols,i+1)
-        plt.imshow(img)
-        plt.xticks([])
-        plt.yticks([])
 
-    return best_img, best_loss
+    return best_img, best_loss, imgs
