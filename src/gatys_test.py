@@ -56,10 +56,9 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
         plt.show()
 
     # Save Images ---------------------------------------------
-    output_name = os.path.basename(content_path.split('.')[0]) + ' ' + \
-                  os.path.basename(style_path.split('.')[0]) + '.jpg'
-
     if save_output:
+        output_name = os.path.basename(content_path).split('.')[0] + ' ' + \
+                      os.path.basename(style_path).split('.')[0] + '.jpg'
         fig_output.savefig(os.path.join('..', 'output', output_name), bbox_inches='tight')
         fig_compare.savefig(os.path.join('..', 'compare', output_name), bbox_inches='tight')
         fig_timeline.savefig(os.path.join('..', 'timeline', output_name), bbox_inches='tight')
