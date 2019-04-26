@@ -193,12 +193,19 @@ def run_style_transfer(content_path,
     max_vals = 255 - norm_means
 
     imgs = []
+    total_loss = []
+    content_loss = []
+    style_loss = []
     for i in range(num_iterations):
         grads, all_loss = compute_grads(cfg)
         loss, style_score, content_score = all_loss
         opt.apply_gradients([(grads, init_image)])
         clipped = tf.clip_by_value(init_image, min_vals, max_vals)
         init_image.assign(clipped)
+
+        total_loss.append(loss)
+        content_loss.append(content_score)
+        style_loss.append(style_loss)
 
         if loss < best_loss:
             # Update best loss and best image from total loss.
@@ -219,4 +226,4 @@ def run_style_transfer(content_path,
                   'time: {:.4f}s'.format(loss, style_score, content_score, time.time() - start_time))
     print('Total time: {:.4f}s'.format(time.time() - global_start))
 
-    return best_img, best_loss, imgs
+    return best_img, best_loss, imgs, total_loss, content_loss, style_loss

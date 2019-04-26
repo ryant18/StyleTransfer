@@ -1,18 +1,17 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import image_util as img
+import numpy as np
 import model
-import matplotlib as mpl
 import os
-mpl.rcParams['figure.figsize'] = (10, 10)
-mpl.rcParams['axes.grid'] = False
 
 
 def create_image(content_path, style_path, show_output=False, save_output=True):
     tf.enable_eager_execution()
     print("Eager execution: {}".format(tf.executing_eagerly()))
     # Run model ---------------------------------------------
-    best_img, best_loss, timeline_imgs = model.run_style_transfer(content_path, style_path, num_iterations=1000)
+    best_img, best_loss, timeline_imgs, total_loss, content_loss, style_loss\
+        = model.run_style_transfer(content_path, style_path, num_iterations=1000)
 
     # Plot outputs ------------------------------------------
     content = img.load(content_path)
@@ -55,6 +54,14 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
     if show_output:
         plt.show()
 
+    x = np.array(i for i in range(len(total_loss)))
+    plt.plot(x, np.array(total_loss), label='total loss')
+    plt.plot(x, np.array(content_loss), label='content loss')
+    plt.plot(x, np.array(style_loss), label='style loss')
+    fig_loss = plt.gcf()
+    if show_output:
+        plt.show()
+
     # Save Images ---------------------------------------------
     if save_output:
         output_name = os.path.basename(content_path).split('.')[0] + ' ' + \
@@ -62,9 +69,10 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
         fig_output.savefig(os.path.join('..', 'output', output_name), bbox_inches='tight')
         fig_compare.savefig(os.path.join('..', 'compare', output_name), bbox_inches='tight')
         fig_timeline.savefig(os.path.join('..', 'timeline', output_name), bbox_inches='tight')
+        fig_loss.savefig(os.path.join('..', 'loss', output_name), bbox_inches='tight')
 
 
-content_path = os.path.join('..',  'images', 'cardinal' + '.jpg')
-style_path = os.path.join('..', 'images', 'starry night' + '.jpg')
-create_image(content_path, style_path)
+cpath = os.path.join('..',  'images', 'cardinal' + '.jpg')
+spath = os.path.join('..', 'images', 'tar8' + '.png')
+create_image(cpath, spath, show_output=True, save_output=False)
 
