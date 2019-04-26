@@ -8,8 +8,8 @@ mpl.rcParams['figure.figsize'] = (10, 10)
 mpl.rcParams['axes.grid'] = False
 
 # Set Images --------------------------------------------
-content_image_name = 'cat'
-style_image_name = 'starry night'
+content_image_name = 'cardinal'
+style_image_name = 'wave'
 
 # Load Images -------------------------------------------
 tf.enable_eager_execution()
