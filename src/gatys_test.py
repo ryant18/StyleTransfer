@@ -54,15 +54,18 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
     if show_output:
         plt.show()
 
-    x = np.array(i for i in range(len(total_loss)))
+    x = np.arange(len(total_loss))
     plt.plot(x, np.array(total_loss), label='total loss')
     plt.plot(x, np.array(content_loss), label='content loss')
     plt.plot(x, np.array(style_loss), label='style loss')
+    plt.yscale('log')
     fig_loss = plt.gcf()
     if show_output:
+        print('showing graph')
         plt.show()
 
     # Save Images ---------------------------------------------
+    print('saving images')
     if save_output:
         output_name = os.path.basename(content_path).split('.')[0] + ' ' + \
                       os.path.basename(style_path).split('.')[0] + '.jpg'
@@ -74,5 +77,5 @@ def create_image(content_path, style_path, show_output=False, save_output=True):
 
 cpath = os.path.join('..',  'images', 'cardinal' + '.jpg')
 spath = os.path.join('..', 'images', 'tar8' + '.png')
-create_image(cpath, spath, show_output=True, save_output=False)
+create_image(cpath, spath, show_output=True, save_output=True)
 

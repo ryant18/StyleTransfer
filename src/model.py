@@ -203,9 +203,9 @@ def run_style_transfer(content_path,
         clipped = tf.clip_by_value(init_image, min_vals, max_vals)
         init_image.assign(clipped)
 
-        total_loss.append(loss)
-        content_loss.append(content_score)
-        style_loss.append(style_loss)
+        total_loss.append(loss.numpy())
+        content_loss.append(content_score.numpy())
+        style_loss.append(style_score.numpy())
 
         if loss < best_loss:
             # Update best loss and best image from total loss.
